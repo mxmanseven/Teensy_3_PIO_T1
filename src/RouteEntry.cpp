@@ -1,5 +1,14 @@
 #include "RouteEntry.h"
 
+
+RouteEntry::RouteEntry()
+{
+  startTenthMile = 0;
+  speed = 0;
+  endTenthMile = 0;
+  routeType = RouteType::EndBy;
+}
+
 RouteEntry::RouteEntry(  
     uint16_t startTenthMile_,
     uint8_t speed_,

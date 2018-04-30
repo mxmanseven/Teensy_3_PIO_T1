@@ -20,6 +20,7 @@ int8_t Route::addSpeedEntry(uint16_t startTenthMile, uint8_t speed)
 
 
   // need flash manager to know next open memory location?? maybe
-  
+
+  return 0;  
 }
 

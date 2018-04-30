@@ -14,9 +14,12 @@ class Route
     // Need to store current and max index.
     static const uint8_t MAX_ROUTES = 50;
 
+    // knh todo - routEnteries will need to be stored in non-vol
+    // if they are stored there, we probably do not need a second
+    // storage location here
     // usedRouteEntryCount, incrimented for each route entry added
     uint8_t usedRouteEntryCount = 0;
-    RouteEntry* routeEntries[MAX_ROUTES];
+    RouteEntry routeEntries[MAX_ROUTES];
 
     // addSpeedEntry() adds route routeEntries[usedRouteEntryCount], then incirments count.
     int8_t addSpeedEntry(uint16_t startTenthMile, uint8_t speed);  

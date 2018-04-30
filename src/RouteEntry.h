@@ -10,6 +10,8 @@ enum class RouteType : uint8_t {SpeedChange, MiliageRest, KnownControl, EndBy };
 class RouteEntry
 {
   public:
+  RouteEntry();
+
   RouteEntry(
     uint16_t startTenthMile,
     uint8_t speed,
