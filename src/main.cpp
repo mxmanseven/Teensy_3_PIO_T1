@@ -1,17 +1,3 @@
-// #include <Arduino.h>
-
-// void setup() {
-//   Serial.begin(9600);
-// }
-
-// void loop() {
-//   Serial.println("hi");
-//   delay(2000);
-// }
-
-
-
-
 #include <Arduino.h>
 #include "display.h"
 #include "WheelManager.h"
@@ -25,23 +11,11 @@
 #include <hd44780ioClass/hd44780_I2Cexp.h> // i2c expander i/o class header
 
 
-#include <DS3231.h>
+#include "TimeService.h"
 
 hd44780_I2Cexp lcd; // declare lcd object: auto locate & config exapander chip
 
-
-DS3231 Clock;
-
-
-RTClib RTC;
-
-byte Year = 20;
-byte Month = 04;
-byte Date = 29;
-byte DoW = 1;
-byte Hour = 9;
-byte Minute = 1;
-byte Second = 0;
+TimeServicKnh timeKnh;
 
 
 void setup() 
@@ -71,40 +45,13 @@ void setup()
         // //Clock.setClockMode(false);	// set to 24h
 		// Clock.setClockMode(true);	// set to 12h
 
-		// Clock.setYear(Year);
-		// Clock.setMonth(Month);
-		// Clock.setDate(Date);
-		// Clock.setDoW(DoW);
-		// Clock.setHour(Hour);
-		// Clock.setMinute(Minute);
-		// Clock.setSecond(Second);
-
-
-
 }
 
 void loop() {
     delay(1000);
+
+    int unixTime = timeKnh.getUnitxTime();
+    Serial.println(String(unixTime));
   
-    DateTime now = RTC.now();
-    
-    Serial.print(now.year(), DEC);
-    Serial.print('/');
-    Serial.print(now.month(), DEC);
-    Serial.print('/');
-    Serial.print(now.day(), DEC);
-    Serial.print(' ');
-    Serial.print(now.hour(), DEC);
-    Serial.print(':');
-    Serial.print(now.minute(), DEC);
-    Serial.print(':');
-    Serial.print(now.second(), DEC);
-    Serial.println();
-    
-    Serial.print(" since midnight 1/1/1970 = ");
-    Serial.print(now.unixtime());
-    Serial.print("s = ");
-    Serial.print(now.unixtime() / 86400L);
-    Serial.println("d");
 }
 
