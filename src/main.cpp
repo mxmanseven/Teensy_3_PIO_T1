@@ -33,16 +33,27 @@ void setup()
         I2C_MASTER, 
         0x00, 
         I2C_PINS_16_17, 
-        I2C_PULLUP_INT , 
+        I2C_PULLUP_EXT, 
         400000);
 
+    eep.begin(extEEPROM::twiClock400kHz);
+
     // write
+    delay(100);
+    eep.write(0, 13);
+
     // read
 }
 
 void loop() {
     delay(1000);
 
-    int unixTime = timeKnh.getUnitxTime();
-    Serial.println(String(unixTime)); 
+
+    int readValue = 0;
+    readValue = eep.read(0);
+    Serial.println(String(readValue));
+
+
+    // int unixTime = timeKnh.getUnitxTime();
+    // Serial.println(String(unixTime)); 
 }
