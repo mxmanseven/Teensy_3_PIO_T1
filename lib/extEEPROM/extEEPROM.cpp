@@ -123,7 +123,8 @@ byte extEEPROM::write(unsigned long addr, byte *values, unsigned int nBytes)
         nPage = _pageSize - ( addr & (_pageSize - 1) );
         //find min(nBytes, nPage, BUFFER_LENGTH) -- BUFFER_LENGTH is defined in the Wire library.
         nWrite = nBytes < nPage ? nBytes : nPage;
-        nWrite = I2C_TX_BUFFER_LENGTH - _nAddrBytes < nWrite ? I2C_TX_BUFFER_LENGTH - _nAddrBytes : nWrite;
+        nWrite =  I2C_TX_BUFFER_LENGTH - _nAddrBytes < nWrite ? I2C_TX_BUFFER_LENGTH - _nAddrBytes : nWrite;
+        //nWrite = BUFFER_LENGTH - _nAddrBytes < nWrite ? BUFFER_LENGTH - _nAddrBytes : nWrite;
         ctrlByte = _eepromAddr | (byte) (addr >> _csShift);
         Wire.beginTransmission(ctrlByte);
         if (_nAddrBytes == 2) Wire.write( (byte) (addr >> 8) );   //high addr byte
@@ -169,6 +170,7 @@ byte extEEPROM::read(unsigned long addr, byte *values, unsigned int nBytes)
         nPage = _pageSize - ( addr & (_pageSize - 1) );
         nRead = nBytes < nPage ? nBytes : nPage;
         nRead = I2C_RX_BUFFER_LENGTH < nRead ? I2C_RX_BUFFER_LENGTH : nRead;
+        //nRead = BUFFER_LENGTH < nRead ? BUFFER_LENGTH : nRead;
         ctrlByte = _eepromAddr | (byte) (addr >> _csShift);
         Wire.beginTransmission(ctrlByte);
         if (_nAddrBytes == 2) Wire.write( (byte) (addr >> 8) );   //high addr byte

@@ -33,14 +33,20 @@ void setup()
         I2C_MASTER, 
         0x00, 
         I2C_PINS_16_17, 
-        I2C_PULLUP_EXT, 
+        I2C_PULLUP_INT, 
         400000);
 
-    eep.begin(extEEPROM::twiClock400kHz);
+    //Wire.begin();
+
+    // disable internal pull up which is set by default in Wire.h
+    // digitalWrite(SDA, 0);
+    // digitalWrite(SCL, 0);
+
+    //eep.begin(extEEPROM::twiClock400kHz);
 
     // write
     delay(100);
-    eep.write(0, 13);
+    //eep.write(0, 13);
 
     // read
 }
@@ -49,11 +55,11 @@ void loop() {
     delay(1000);
 
 
-    int readValue = 0;
-    readValue = eep.read(0);
-    Serial.println(String(readValue));
+    // int readValue = 0;
+    // readValue = eep.read(0);
+    // Serial.println(String(readValue));
 
 
-    // int unixTime = timeKnh.getUnitxTime();
-    // Serial.println(String(unixTime)); 
+    int unixTime = timeKnh.getUnitxTime();
+    Serial.println(String(unixTime)); 
 }
