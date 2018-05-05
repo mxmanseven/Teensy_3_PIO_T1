@@ -1,28 +1,87 @@
-#include <avr/io.h>
+
 #include "RouteEntry.h"
+#include "Arduino.h"
 
 #ifndef ROUTE_H_
 #define ROUTE_H_
+
+// set ROUTE_DEBUG to 1 to enable debug mode
+// set to anything else to dissable it.
+#ifndef ROUTE_DEBUG
+#define ROUTE_DEBUG 1
+#endif
+
+#if ROUTE_DEBUG == 1
+void RouteTest();
+#endif
+
 
 class Route
 {
   public:
     Route();
     
-    // these need to be in persistant storage, how do we do that?
-    // write to flash
-    // Need to store current and max index.
-    static const uint8_t MAX_ROUTES = 50;
-
     // knh todo - routEnteries will need to be stored in non-vol
     // if they are stored there, we probably do not need a second
     // storage location here
     // usedRouteEntryCount, incrimented for each route entry added
-    uint8_t usedRouteEntryCount = 0;
-    RouteEntry routeEntries[MAX_ROUTES];
+    //static uint8_t routeCount;
+
+    // get used
+    static uint8_t getRouteCount();
+
+    static void setRouteCount(uint8_t count);
 
     // addSpeedEntry() adds route routeEntries[usedRouteEntryCount], then incirments count.
-    int8_t addSpeedEntry(uint16_t startTenthMile, uint8_t speed);  
+    static int8_t addEntry(
+      uint16_t startTenthMile,
+      uint16_t endTenthMile,
+      uint8_t speed,
+      uint8_t freeMinutes,
+      RouteType routeType);
+
+    static int8_t getEntry(
+      uint8_t entryIndex,
+      uint16_t& startTenthMile,
+      uint16_t& endTenthMile,
+      uint8_t& speed,
+      uint8_t& freeMinutes,
+      RouteType& routeType);
+
+    static String ToStringConsole(
+      uint16_t startTenthMile,
+      uint16_t endTenthMile,
+      uint8_t speed,
+      uint8_t freeMinutes,
+      RouteType routeType);
+
+  private:
+
+    static uint8_t validateNewRoute(
+      uint16_t startTenthMile,
+      uint16_t endTenthMile,
+      uint8_t speed,
+      uint8_t freeMinutes,
+      RouteType routeType);
+
+    static const uint8_t MAX_ROUTES = 50;
+
+    // uint16_t startMile
+    // uint16_t endMile
+    // uint8_t  speed
+    // uint8_t  freeMinutes
+    // uint8_t  type
+    // (3 * 8) + (2 * 16)
+    // 24 + 32
+    // 54 bits per route / 8 => 7
+    static const int BYTES_PER_ROUTE = 7;
+
+    static const int TOTAL_BYTES_TO_STORE = MAX_ROUTES * BYTES_PER_ROUTE;
+
+    // Start storing rout data at address 30
+    static const int STARTTING_ADDRESS = 30;
+    static const int ROUTE_COUNT_ADDRESS = 29;
+
 };
 
 #endif

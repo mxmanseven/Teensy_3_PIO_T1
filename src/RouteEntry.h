@@ -5,7 +5,14 @@
 
 // enum class if type uint8_t
 // check out http://en.cppreference.com/w/cpp/language/enum
-enum class RouteType : uint8_t {SpeedChange, MiliageRest, KnownControl, EndBy };
+enum class RouteType : uint8_t 
+{
+  SpeedChange,
+  MiliageRest,
+  KnownControl,
+  EndBy,
+  FreeTime
+};
 
 class RouteEntry
 {

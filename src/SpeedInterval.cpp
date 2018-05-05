@@ -20,6 +20,23 @@ void SiTest()
   }
 }
 
+int SpeedInterval::GetMilesAndMinutesBySpeed(
+  int speed, 
+  float& miles,
+  int& minutes)
+{
+  miles = 0.0;
+  minutes = 0;
+  
+  if (speed > 99 || speed < 0) return -1;
+  
+  miles = SpeedInterval::MileTehthssAndMinutesBySpeed[speed][0] / 10.0;
+  minutes = SpeedInterval::MileTehthssAndMinutesBySpeed[speed][1];
+
+  return 0;
+}
+
+
 // first index is speed
 // first value at second index is tenth miles between possiables at this speed
 // second value is minutes between possiables at this speed
@@ -128,17 +145,4 @@ uint8_t SpeedInterval::MileTehthssAndMinutesBySpeed[][2] =
 };
 
 
-
-int SpeedInterval::GetMilesAndMinutesBySpeed(int speed, float& miles, int& minutes)
-{
-  miles = 0.0;
-  minutes = 0;
-  
-  if (speed > 99 || speed < 0) return -1;
-  
-  miles = SpeedInterval::MileTehthssAndMinutesBySpeed[speed][0] / 10.0;
-  minutes = SpeedInterval::MileTehthssAndMinutesBySpeed[speed][1];
-
-  return 0;
-}
 

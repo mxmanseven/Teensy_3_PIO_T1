@@ -6,7 +6,10 @@
 class SpeedInterval 
 {
   public:
-  int GetMilesAndMinutesBySpeed(int speed, float& miles, int& minutes);
+  static int GetMilesAndMinutesBySpeed(
+    int speed, 
+    float& miles, 
+    int& minutes);
   
   // build static const table
   // Mile and Minute by speed

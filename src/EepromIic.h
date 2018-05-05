@@ -6,11 +6,11 @@
 class EepromIic
 {
     public:
-        void write_byte(
+        static void write_byte(
             unsigned int eeaddress, 
             uint8_t data);
 
-        uint8_t read_byte(
+        static uint8_t read_byte(
             unsigned int eeaddress);
 };
 

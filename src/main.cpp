@@ -11,6 +11,7 @@
 
 #include "TimeService.h"
 #include "EepromIic.h"
+#include "Route.h"
 
 hd44780_I2Cexp lcd; // declare lcd object: auto locate & config exapander chip
 
@@ -36,18 +37,22 @@ void setup()
         400000);
 
     delay(100);
+
+    #if ROUTE_DEBUG == 1
+    RouteTest();
+    #endif
 }
 
 void loop() {
-    delay(500);
+    // delay(500);
 
-    eepromIic.write_byte(0, 12);
-    delay(100);
+    // eepromIic.write_byte(0, 27);
+    // delay(100);
 
-    int readValue = 0;
-    readValue = eepromIic.read_byte(0);
-    Serial.println("eeprom " + String(readValue));
+    // int readValue = 0;
+    // readValue = eepromIic.read_byte(0);
+    // Serial.println("eeprom " + String(readValue));
 
-    int unixTime = timeKnh.getUnitxTime();
-    Serial.println(String(unixTime)); 
+    // int unixTime = timeKnh.getUnitxTime();
+    // Serial.println(String(unixTime)); 
 }
