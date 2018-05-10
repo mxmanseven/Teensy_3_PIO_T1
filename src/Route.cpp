@@ -5,11 +5,15 @@
 #if ROUTE_DEBUG == 1
 void RouteTest()
 {
+
+  Route::setRouteCount(0);
+
+  // knh todo - see why route type is not getting set or read correctly.
   int valid = Route::addEntry(
-    0,
-    1,
-    6,
-    0,
+    10, // start mile
+    20, // end mile
+    6, // speed
+    7, // free minutes
     RouteType::SpeedChange);
 
   if (valid != 0)
@@ -46,18 +50,20 @@ void RouteTest()
 
 Route::Route()
 {
-  // knh todo - load routes from flash
-  // knh todo - load possiables form flash
 }
 
 uint8_t Route::getRouteCount()
 {
   //knh todo  if it is bogus, use zero.
-  return EepromIic::read_byte(ROUTE_COUNT_ADDRESS);
+  uint8_t r = EepromIic::read_byte(ROUTE_COUNT_ADDRESS);
+  Serial.println("Route::getRouteCount raw count: " + String(r));
+  if (r > MAX_ROUTES) r = 0;
+  return r;
 }
 
 void Route::setRouteCount(uint8_t count)
 {
+  Serial.println("Route::setRouteCount: " + String(count));
   EepromIic::write_byte(ROUTE_COUNT_ADDRESS, count);
 }
 
@@ -71,7 +77,7 @@ int8_t Route::addEntry(
   int routeCount = getRouteCount(); 
 
   #if ROUTE_DEBUG == 1
-  Serial.println("Route addEntry routeCount: " + String(routeCount));
+    Serial.println("Route addEntry routeCount: " + String(routeCount));
   #endif
 
   if ((routeCount + 1) >= MAX_ROUTES) return -1;
@@ -83,10 +89,21 @@ int8_t Route::addEntry(
     freeMinutes,
     routeType);
 
-  if(validRoute < 0) return -1;
+  if(validRoute < 0) 
+  {
+    #if ROUTE_DEBUG == 1
+      Serial.println("Route::getEntry() validation failed! validRoute: " + String(validRoute));
+    #endif
+    return -1;
+  }
 
   // write this route to the next spot in eeprom
   int addrToWrite = STARTTING_ADDRESS + (routeCount * BYTES_PER_ROUTE);
+
+  #if ROUTE_DEBUG == 1
+    Serial.println("Route::getEntry() addrToWrite: " + String(addrToWrite));
+  #endif
+
   EepromIic::write_byte(addrToWrite++, startTenthMile >> 8); // MSB
   EepromIic::write_byte(addrToWrite++, startTenthMile & 0xFF); // LSB
   EepromIic::write_byte(addrToWrite++, endTenthMile >> 8); // MSB
@@ -111,9 +128,21 @@ int8_t Route::getEntry(
 {
   uint8_t routeCount = getRouteCount();
 
-  if ((entryIndex + 1) >= routeCount) return -1;
+#if ROUTE_DEBUG == 1
+  Serial.println("Route::getEntry() entryIndex: " + String(entryIndex));
+  Serial.println("Route::getEntry() routeCount: " + String(routeCount));
+#endif
+
+  if (entryIndex >= routeCount) return -1;
 
   int addrToRead = STARTTING_ADDRESS + (routeCount * BYTES_PER_ROUTE);
+
+  Serial.println("Route::getEntry() addrToRead: " + addrToRead);
+
+#if ROUTE_DEBUG == 1
+  Serial.println("Route::getEntry() addrToRead: " + addrToRead);
+#endif
+
   startTenthMile = EepromIic::read_byte(addrToRead++) << 8; // MSB
   startTenthMile |= EepromIic::read_byte(addrToRead++); // LSB
   endTenthMile = EepromIic::read_byte(addrToRead++) << 8; // MSB
@@ -173,9 +202,9 @@ String Route::ToStringConsole(
   RouteType routeType)
 {
   return "StartTenthMile: " + String(startTenthMile)
-    + "endTenthMile: " + String(endTenthMile)
-    + "speed: " + String(speed)
-    + "routeType: " + String((int)routeType)
-    + "freeMinutes: " + String(freeMinutes);
+    + " endTenthMile: " + String(endTenthMile)
+    + " speed: " + String(speed)
+    + " routeType: " + String((int)routeType)
+    + " freeMinutes: " + String(freeMinutes);
 }
 

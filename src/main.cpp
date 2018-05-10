@@ -45,7 +45,7 @@ void setup()
 }
 
 void loop() {
-    // delay(500);
+     delay(1000);
 
     // eepromIic.write_byte(0, 27);
     // delay(100);
