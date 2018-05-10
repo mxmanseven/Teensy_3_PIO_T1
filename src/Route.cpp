@@ -135,6 +135,7 @@ int8_t Route::getEntry(
 
   if (entryIndex >= routeCount) return -1;
 
+  //knh todo - use addrToRead should be based off of entryIndex
   int addrToRead = STARTTING_ADDRESS + (routeCount * BYTES_PER_ROUTE);
 
   Serial.println("Route::getEntry() addrToRead: " + addrToRead);
