@@ -18,15 +18,6 @@ void RouteTest();
 class Route
 {
   public:
-    Route();
-    
-    // knh todo - routEnteries will need to be stored in non-vol
-    // if they are stored there, we probably do not need a second
-    // storage location here
-    // usedRouteEntryCount, incrimented for each route entry added
-    //static uint8_t routeCount;
-
-    // get used
     static uint8_t getRouteCount();
 
     static void setRouteCount(uint8_t count);
@@ -55,6 +46,8 @@ class Route
       RouteType routeType);
 
   private:
+
+    Route();
 
     static uint8_t validateNewRoute(
       uint16_t startTenthMile,

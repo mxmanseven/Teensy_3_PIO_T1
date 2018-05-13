@@ -28,20 +28,28 @@ void RouteTest()
         + String(valid));
     }
 
-    uint16_t startTenthMile = 0;
-    uint16_t endTenthMile = 0;
-    uint8_t speed = 0;
-    uint8_t freeMinutes = 0;
-    RouteType routeType = RouteType::FreeTime;
-
     Serial.println("RouteTest getEntry()");
+
+    uint8_t freeMinutes = 0;
+    RouteEntry r(0, 0, 0, RouteType::SpeedChange);
+
     int nResult = Route::getEntry(
       index++,
-      startTenthMile,
-      endTenthMile,
-      speed,
+      r.startTenthMile,
+      r.endTenthMile,
+      r.speed,
       freeMinutes,
-      routeType);
+      r.routeType);
+
+   #if ROUTE_DEBUG == 1
+  String routeString =Route::ToStringConsole(
+      r.startTenthMile,
+      r.endTenthMile,
+      r.speed,
+    freeMinutes,
+    r.routeType);
+  Serial.println("RouteTest obj: " + routeString);
+  #endif
 
     Serial.println("RouteTest: getEntry result: '" + String(nResult) + "'");
     Serial.flush();

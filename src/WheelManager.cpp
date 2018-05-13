@@ -188,8 +188,15 @@ float WheelManager::GetTotalDistance()
   return float(totalInches / 63360) + miliageAdjustment;
 }
 
-// add one tenth mile for each call.
-void WheelManager::AddDistance()
+// add distance for reset
+void WheelManager::AddDistance(float milesAdjustment)
 {
-  miliageAdjustment += 0.1;
+  miliageAdjustment += milesAdjustment;
+}
+
+// add one tenth mile for each call.
+void WheelManager::ChangeDistanceAndCalibrate(float milesAdjustment)
+{
+  miliageAdjustment += milesAdjustment;
+  // knh todo - calibrate wheel size for new distance
 }
