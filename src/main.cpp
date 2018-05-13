@@ -25,7 +25,7 @@ void setup()
     wmTest();
     #endif
 
-    Serial.begin(9600);
+    Serial.begin(57600);
 
     while(!Serial) {}
 

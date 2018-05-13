@@ -5,46 +5,47 @@
 #if ROUTE_DEBUG == 1
 void RouteTest()
 {
+  // for (int j = 0; j < 512; j++)
+  // {
+  //   EepromIic::write_byte(j, 0);
+  // }
 
   Route::setRouteCount(0);
-
-  // knh todo - see why route type is not getting set or read correctly.
-  int valid = Route::addEntry(
-    10, // start mile
-    20, // end mile
-    6, // speed
-    7, // free minutes
-    RouteType::SpeedChange);
-
-  if (valid != 0)
+  int index = 0;
+  for (int i = 0; i < 50; i +=5)
   {
-    Serial.println("RouteTest addEntry() failed "
-      + String(valid));
-  }
+    Serial.println("i: " + String(i));
+    int valid = Route::addEntry(
+      i, // start mile
+      i+5, // end mile
+      i+6, // speed
+      i+7, // free minutes
+      (RouteType)((int)(i*2.2)%5));
 
-  uint16_t startTenthMile = 0;
-  uint16_t endTenthMile = 0;
-  uint8_t speed = 0;
-  uint8_t freeMinutes = 0;
-  RouteType routeType = RouteType::FreeTime;
+    if (valid != 0)
+    {
+      Serial.println("RouteTest addEntry() failed "
+        + String(valid));
+    }
 
-  Route::getEntry(
-    0,
-    startTenthMile,
-    endTenthMile,
-    speed,
-    freeMinutes,
-    routeType);
+    uint16_t startTenthMile = 0;
+    uint16_t endTenthMile = 0;
+    uint8_t speed = 0;
+    uint8_t freeMinutes = 0;
+    RouteType routeType = RouteType::FreeTime;
 
-  String r =Route::ToStringConsole(
-    startTenthMile,
-    endTenthMile,
-    speed,
-    freeMinutes,
-    routeType);
+    Serial.println("RouteTest getEntry()");
+    int nResult = Route::getEntry(
+      index++,
+      startTenthMile,
+      endTenthMile,
+      speed,
+      freeMinutes,
+      routeType);
 
-  Serial.println("RouteTest:" + r);
-
+    Serial.println("RouteTest: getEntry result: '" + String(nResult) + "'");
+    Serial.flush();
+  }  
 }
 #endif
 
@@ -77,7 +78,7 @@ int8_t Route::addEntry(
   int routeCount = getRouteCount(); 
 
   #if ROUTE_DEBUG == 1
-    Serial.println("Route addEntry routeCount: " + String(routeCount));
+    //Serial.println("Route addEntry routeCount: '" + String(routeCount) + "'");
   #endif
 
   if ((routeCount + 1) >= MAX_ROUTES) return -1;
@@ -92,7 +93,7 @@ int8_t Route::addEntry(
   if(validRoute < 0) 
   {
     #if ROUTE_DEBUG == 1
-      Serial.println("Route::getEntry() validation failed! validRoute: " + String(validRoute));
+      Serial.println("Route::addEntry() validation failed! validRoute: " + String(validRoute));
     #endif
     return -1;
   }
@@ -101,7 +102,7 @@ int8_t Route::addEntry(
   int addrToWrite = STARTTING_ADDRESS + (routeCount * BYTES_PER_ROUTE);
 
   #if ROUTE_DEBUG == 1
-    Serial.println("Route::getEntry() addrToWrite: " + String(addrToWrite));
+    Serial.println("Route::addEntry() addrToWrite: " + String(addrToWrite));
   #endif
 
   EepromIic::write_byte(addrToWrite++, startTenthMile >> 8); // MSB
@@ -126,6 +127,8 @@ int8_t Route::getEntry(
       uint8_t& freeMinutes,
       RouteType& routeType)
 {
+  Serial.println("getEntry top");
+
   uint8_t routeCount = getRouteCount();
 
 #if ROUTE_DEBUG == 1
@@ -136,9 +139,7 @@ int8_t Route::getEntry(
   if (entryIndex >= routeCount) return -1;
 
   //knh todo - use addrToRead should be based off of entryIndex
-  int addrToRead = STARTTING_ADDRESS + (routeCount * BYTES_PER_ROUTE);
-
-  Serial.println("Route::getEntry() addrToRead: " + addrToRead);
+  int addrToRead = STARTTING_ADDRESS + ((entryIndex) * BYTES_PER_ROUTE);
 
 #if ROUTE_DEBUG == 1
   Serial.println("Route::getEntry() addrToRead: " + addrToRead);
@@ -152,6 +153,16 @@ int8_t Route::getEntry(
   speed = EepromIic::read_byte(addrToRead++);
   freeMinutes = EepromIic::read_byte(addrToRead++);
   routeType = (RouteType)EepromIic::read_byte(addrToRead++);
+
+   #if ROUTE_DEBUG == 1
+  String r =Route::ToStringConsole(
+    startTenthMile,
+    endTenthMile,
+    speed,
+    freeMinutes,
+    routeType);
+  Serial.println("RouteTest: " + r);
+  #endif
 
   return 0;
 }
