@@ -58,10 +58,8 @@ class WheelManager
    // at 6ft cirmfurance @ 15hz => 68 mph => 0.066 seconds between ticks.
     void AddTickRaw();
 
-
     float miliageAdjustment;
 
-    void AddDistance();
-   
+    void AddDistance();   
 };
 #endif
