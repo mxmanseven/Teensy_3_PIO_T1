@@ -4,6 +4,7 @@
 #if WHEEL_MANAGER_DEBUG == 1
 void wmTest()
 {
+  // knh todo - remove Serial.begin()
   Serial.begin(9600);
   
   WheelManager wm;
@@ -106,6 +107,8 @@ float WheelManager::GetSpeed(uint8_t durationSeconds)
 
 // knh todo - might want to use the time from the first to last tick instead of first to now
 // if there is more than one tick.
+// knh todo - or use durationSeconds instead of msFromNowToFirstTickInSet because we want
+// the average over the period durationSeconds.
 
   uint16_t msFromNowToFirstTickInSet = nowMs - lastTickArrivalMs;
   float inchesTravled = (float(numberOfTicksGoneBack) * wheelCircumfranceInches);
@@ -126,6 +129,7 @@ void WheelManager::AddTickRaw()
    // at 6ft cirmfurance @ 15hz => 68 mph => 0.066 seconds between ticks.
 
 #if WHEEL_MANAGER_DEBUG == 1
+  // knh todo - remove Serial.begin()
   Serial.begin(9600);
 #endif
 
