@@ -6,6 +6,9 @@
 
 int8_t EnduroManager::startEnduro()
 {
+    // knh todo - zero distance
+    // knh todo - zero clock
+    
     lastRouteEntryIndex = 0;
     nextRouteEntryIndex = 0;
     currentRouteSpeed = 0;
@@ -23,18 +26,20 @@ int8_t EnduroManager::startEnduro()
     
     uint8_t routeCount = Route::getRouteCount();
 
-    if (routeCount) 
+    if (routeCount == 0) 
     {
-        Serial.printf("EnduroManager::startEnduro cannot start");
+        Serial.printf("EnduroManager::startEnduro cannot start, route count: %d\n",
+                      routeCount);
         return -1;
     }
 
     int8_t nResult = getNextRouteEntry(freeMinutes);
 
-    if (routeCount) 
+    if (nResult) 
     {
-        Serial.printf("EnduroManager::startEnduro cannot start");
-        return -1;
+        Serial.printf("EnduroManager::startEnduro getNextRouteEntry FAILED %d\n", 
+                      nResult);
+        return -2;
     }
 
     // the first route should always be a speed
@@ -46,7 +51,7 @@ int8_t EnduroManager::startEnduro()
     else
     {
         Serial.printf("EnduroManager::StartEnduro ERROR, first route is not a speed");
-        return -2;
+        return -3;
     }
 }
 
@@ -95,7 +100,7 @@ int8_t EnduroManager::getRaceData(
             case RouteType::EndBy:
             case RouteType::FreeTime:
             {
-                // knh todo - finish 
+                // knh todo - finish handling route types
                 break;
             }
         }
