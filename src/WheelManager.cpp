@@ -33,6 +33,7 @@ void wmTest()
 
 WheelManager::WheelManager()
 {
+  // knh todo - get wheelCircumfranceInches from eeprom.
   wheelCircumfranceInches = 0.0;
   validTickCount = 0;
   MIN_MS_BETWEEN_TICKS = 50;
