@@ -18,25 +18,24 @@ int8_t EnduroManager::startEnduro()
     nextRouteEntry.startTenthMile = 0;
     nextRouteEntry.endTenthMile = 0;
     nextRouteEntry.routeType = RouteType::SpeedChange;
+
+    uint8_t freeMinutes = 0;
     
     uint8_t routeCount = Route::getRouteCount();
 
-    if (routeCount == 0) 
+    if (routeCount) 
     {
         Serial.printf("EnduroManager::startEnduro cannot start");
         return -1;
     }
 
-    lastRouteEntryIndex = 0;
-    uint8_t freeMinutes = 0;
+    int8_t nResult = getNextRouteEntry(freeMinutes);
 
-    Route::getEntry(
-        lastRouteEntryIndex, 
-        lastRouteEntry.startTenthMile,
-        lastRouteEntry.endTenthMile,
-        lastRouteEntry.speed,
-        freeMinutes,
-        lastRouteEntry.routeType);
+    if (routeCount) 
+    {
+        Serial.printf("EnduroManager::startEnduro cannot start");
+        return -1;
+    }
 
     // the first route should always be a speed
     if (lastRouteEntry.routeType == RouteType::SpeedChange)
@@ -49,32 +48,57 @@ int8_t EnduroManager::startEnduro()
         Serial.printf("EnduroManager::StartEnduro ERROR, first route is not a speed");
         return -2;
     }
-
-    if(routeCount > 1)
-    {
-        // get next route
-        nextRouteEntryIndex = lastRouteEntryIndex + 1;
-        uint8_t freeMinutesTemp = 0;
-        Route::getEntry(
-            nextRouteEntryIndex, 
-            nextRouteEntry.startTenthMile,
-            nextRouteEntry.endTenthMile,
-            nextRouteEntry.speed,
-            freeMinutesTemp,
-            nextRouteEntry.routeType);
-    }
 }
 
 int8_t EnduroManager::getRaceData(
             uint16_t &tenthMilesToPossiable,
             int16_t &secondsOffPace)
 {
+    int nResult = 0;
     float totalDistanceTenthMile = WheelManager::GetTotalDistance() * 10;
+    uint8_t freeMinutes = 0;
+    float milesChange = 0.0;
+
+    Top:
 
     if(totalDistanceTenthMile >= nextRouteEntry.startTenthMile)
     {
-        // get next route entry
+        // get next route entry and process it
+        // repeat getting next until a speed change is found 
+        nResult = getNextRouteEntry(freeMinutes);
 
+        if(nResult) 
+        {
+            Serial.printf("EnduroManager::getRaceData getNextRouteEntry failed %d", 
+            nResult);
+            return nResult;
+        }
+
+        // handle each route type
+        // all types byt speed changes will go back to Top.
+        switch(lastRouteEntry.routeType)
+        {
+            case RouteType::SpeedChange:
+            {
+                currentRouteSpeed = lastRouteEntry.speed;
+                currentSpeedStartTenthMile = lastRouteEntry.startTenthMile;
+                break;
+            }
+            case RouteType::MiliageRest:
+            { 
+                milesChange = (lastRouteEntry.endTenthMile - lastRouteEntry.startTenthMile) / 10.0;
+                WheelManager::AddDistance(milesChange);
+                // call self to start process from top
+                goto Top;
+            }
+            case RouteType::KnownControl:
+            case RouteType::EndBy:
+            case RouteType::FreeTime:
+            {
+                // knh todo - finish 
+                break;
+            }
+        }
     }
 
     // get miles per possiable
@@ -86,9 +110,63 @@ int8_t EnduroManager::getRaceData(
         milesPerPossiable,
         minutesPerPossiable);
     
-    // float distanceIntoSpeedRoute = totalDistance - (currentSpeedStartTenthMile / 10.0);
+    float milesIntoSpeedRoute = (totalDistanceTenthMile - currentSpeedStartTenthMile) / 10;
 
-    uint8_t possiablCount = currentSpeedStartTenthMile;
+    uint8_t nextPossiablCount = ceil(milesIntoSpeedRoute / milesPerPossiable);
+
+    Serial.printf("EnduroManager::getRaceData nextPossiablCount %d\n",
+        nextPossiablCount);
+
+    uint16_t nextPossiableTenthMiles = currentSpeedStartTenthMile
+        + (nextPossiablCount * milesPerPossiable * 10.0);
+        
+    Serial.printf("EnduroManager::getRaceData nextPossiableTenthMiles %d\n",
+        nextPossiableTenthMiles);
+
+    tenthMilesToPossiable = nextPossiableTenthMiles - totalDistanceTenthMile;
+
+    // pace
+
+    // Given the current mile, get the next possable,
+    // for the speed gind what the ontime minute is
+    // pace si teh difference of teh ontime minute and teh actule minutes.
+
+
+
+
+// enduro pace calculation
+
+// get next or last known time and distance possiable and work back from there based on course speed
+
+// ex
+
+// 6 mph, 
+//     0.1mi between possiables
+//     1min between possiables
+//     10 min per mile
+    
+//     next possiable
+//         mile 1
+//         time 10min
+//         speed 6
+        
+//     current distance 0.95mi
+//     current time: 8min
+    
+//         distance to next possiable = 1 - 0.95 = 0.05
+        
+//         time to travel that distance = distance / rate 
+//            hr = 0.05mi / 6mph
+//             = 0.00833 hours
+//            min = 0.00833hr * 60 (min / hr)
+//            min = 0.5
+//            seconds = 0.5min
+
+           
+        
+// distance = rate * time
+// rate = distance / time
+// time = distance / rate
 
     return 0;
 }
@@ -118,13 +196,18 @@ int8_t EnduroManager::getNextRouteEntry(uint8_t &freeMinutes)
         // get next route
         nextRouteEntryIndex = lastRouteEntryIndex + 1;
         uint8_t freeMinutesTemp = 0;
-        Route::getEntry(
+        nResult = Route::getEntry(
             nextRouteEntryIndex, 
             nextRouteEntry.startTenthMile,
             nextRouteEntry.endTenthMile,
             nextRouteEntry.speed,
             freeMinutesTemp,
             nextRouteEntry.routeType);
+            
+        Serial.printf("EnduroManager::getNextRouteEntry getentry failed: %d", 
+            nResult);
+
+        return -2;
     }
 }
 
