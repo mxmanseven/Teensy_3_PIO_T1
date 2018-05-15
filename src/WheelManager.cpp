@@ -4,6 +4,7 @@
 #if WHEEL_MANAGER_DEBUG == 1
 void wmTest()
 {
+  // knh todo - remove Serial.begin()
   Serial.begin(9600);
   
   WheelManager wm;
@@ -33,6 +34,7 @@ void wmTest()
 
 WheelManager::WheelManager()
 {
+  // knh todo - get wheelCircumfranceInches from eeprom.
   wheelCircumfranceInches = 0.0;
   validTickCount = 0;
   MIN_MS_BETWEEN_TICKS = 50;
@@ -101,6 +103,16 @@ float WheelManager::GetSpeed(uint8_t durationSeconds)
       break;
     }
   }  
+<<<<<<< HEAD
+=======
+
+// knh todo - might want to use the time from the first to last tick instead of first to now
+// if there is more than one tick.
+// knh todo - or use durationSeconds instead of msFromNowToFirstTickInSet because we want
+// the average over the period durationSeconds.
+
+  uint16_t msFromNowToFirstTickInSet = nowMs - lastTickArrivalMs;
+>>>>>>> ab62ba1570667d4cced1ed22b29ff5ec7e63a306
   float inchesTravled = (float(numberOfTicksGoneBack) * wheelCircumfranceInches);
   #if WHEEL_MANAGER_DEBUG == 1
   Serial.println("inchesTraveled: " + String(inchesTravled));
@@ -118,7 +130,12 @@ void WheelManager::AddTickRaw()
    // A tick is valid if it arrived 50ms after the last tick
    // at 6ft cirmfurance @ 15hz => 68 mph => 0.066 seconds between ticks.
 
+<<<<<<< HEAD
   #if WHEEL_MANAGER_DEBUG == 1
+=======
+#if WHEEL_MANAGER_DEBUG == 1
+  // knh todo - remove Serial.begin()
+>>>>>>> ab62ba1570667d4cced1ed22b29ff5ec7e63a306
   Serial.begin(9600);
   #endif
 
