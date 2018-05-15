@@ -41,15 +41,15 @@ void RouteTest()
       freeMinutes,
       r.routeType);
 
-   #if ROUTE_DEBUG == 1
-  String routeString =Route::ToStringConsole(
-      r.startTenthMile,
-      r.endTenthMile,
-      r.speed,
-    freeMinutes,
-    r.routeType);
-  Serial.println("RouteTest obj: " + routeString);
-  #endif
+    #if ROUTE_DEBUG == 1
+    String routeString =Route::ToStringConsole(
+        r.startTenthMile,
+        r.endTenthMile,
+        r.speed,
+      freeMinutes,
+      r.routeType);
+    Serial.println("RouteTest obj: " + routeString);
+    #endif
 
     Serial.println("RouteTest: getEntry result: '" + String(nResult) + "'");
     Serial.flush();
@@ -63,7 +63,6 @@ Route::Route()
 
 uint8_t Route::getRouteCount()
 {
-  //knh todo  if it is bogus, use zero.
   uint8_t r = EepromIic::read_byte(ROUTE_COUNT_ADDRESS);
   Serial.println("Route::getRouteCount raw count: " + String(r));
   if (r > MAX_ROUTES) r = 0;
@@ -109,8 +108,8 @@ int8_t Route::addEntry(
   // write this route to the next spot in eeprom
   int addrToWrite = STARTTING_ADDRESS + (routeCount * BYTES_PER_ROUTE);
 
-  #if ROUTE_DEBUG == 1
-    Serial.println("Route::addEntry() addrToWrite: " + String(addrToWrite));
+   #if ROUTE_DEBUG == 1
+  Serial.println("Route::addEntry() addrToWrite: " + String(addrToWrite));
   #endif
 
   EepromIic::write_byte(addrToWrite++, startTenthMile >> 8); // MSB
@@ -139,19 +138,18 @@ int8_t Route::getEntry(
 
   uint8_t routeCount = getRouteCount();
 
-#if ROUTE_DEBUG == 1
+  #if ROUTE_DEBUG == 1
   Serial.println("Route::getEntry() entryIndex: " + String(entryIndex));
   Serial.println("Route::getEntry() routeCount: " + String(routeCount));
-#endif
+  #endif
 
   if (entryIndex >= routeCount) return -1;
 
-  //knh todo - use addrToRead should be based off of entryIndex
   int addrToRead = STARTTING_ADDRESS + ((entryIndex) * BYTES_PER_ROUTE);
 
-#if ROUTE_DEBUG == 1
+  #if ROUTE_DEBUG == 1
   Serial.println("Route::getEntry() addrToRead: " + addrToRead);
-#endif
+  #endif
 
   startTenthMile = EepromIic::read_byte(addrToRead++) << 8; // MSB
   startTenthMile |= EepromIic::read_byte(addrToRead++); // LSB
@@ -162,7 +160,7 @@ int8_t Route::getEntry(
   freeMinutes = EepromIic::read_byte(addrToRead++);
   routeType = (RouteType)EepromIic::read_byte(addrToRead++);
 
-   #if ROUTE_DEBUG == 1
+  #if ROUTE_DEBUG == 1
   String r =Route::ToStringConsole(
     startTenthMile,
     endTenthMile,

@@ -58,7 +58,7 @@ int8_t EnduroManager::getRaceData(
     float totalDistanceTenthMile = WheelManager::GetTotalDistance() * 10;
     uint8_t freeMinutes = 0;
     float milesChange = 0.0;
-
+    // knh todo - factor out getting next route  and handling the type into a seperate function.
     Top:
 
     if(totalDistanceTenthMile >= nextRouteEntry.startTenthMile)
@@ -82,6 +82,7 @@ int8_t EnduroManager::getRaceData(
             {
                 currentRouteSpeed = lastRouteEntry.speed;
                 currentSpeedStartTenthMile = lastRouteEntry.startTenthMile;
+                // knh todo set end time, or is it start time for each route type to calculate pace
                 break;
             }
             case RouteType::MiliageRest:
@@ -125,15 +126,23 @@ int8_t EnduroManager::getRaceData(
 
     tenthMilesToPossiable = nextPossiableTenthMiles - totalDistanceTenthMile;
 
+
+//  expectedSecondstoNextPossiable = milesToPossiable / Speed * 60 * 60
+//  expectedSecondsHere = expectedSecondsAtNextPossiable - expectedSecondstoNextPossiable
+//  pace = secondsIntoRace - expectedSecondsHere 
+
+
+    float milesToPossiable = tenthMilesToPossiable / 10.0;
+    int expectedSecondsAtPossiable = nextPossiablCount * minutesPerPossiable; // knh todo add expected minutes at last speed
+    int expectedSecondsHere = expectedSecondsAtPossiable; // expectedSecondsToNextPossiable
+    
+
+
     // pace
 
     // Given the current mile, get the next possable,
     // for the speed gind what the ontime minute is
     // pace si teh difference of teh ontime minute and teh actule minutes.
-
-
-
-
 // enduro pace calculation
 
 // get next or last known time and distance possiable and work back from there based on course speed
@@ -152,6 +161,7 @@ int8_t EnduroManager::getRaceData(
         
 //     current distance 0.95mi
 //     current time: 8min
+//     actual pace off by over a minute
     
 //         distance to next possiable = 1 - 0.95 = 0.05
         
@@ -160,8 +170,14 @@ int8_t EnduroManager::getRaceData(
 //             = 0.00833 hours
 //            min = 0.00833hr * 60 (min / hr)
 //            min = 0.5
-//            seconds = 0.5min
-
+//            expectedSecondstoTravelThere = 0.5min * 60 = 30s
+//      expectedSecondstoNextPossiable = milesToPossiable / Speed * 60 * 60
+//
+//      expectedSecondsHere = expectedSecondsAtNextPossiable - expectedSecondstoNextPossiable
+//          = (10min * 60) - 30s
+//          = 600s - 30s
+//          = 570s 
+// pace = secondsIntoRace - expectedSecondsHere 
            
         
 // distance = rate * time

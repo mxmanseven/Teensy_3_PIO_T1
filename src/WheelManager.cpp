@@ -66,16 +66,16 @@ float WheelManager::GetSpeed(uint8_t durationSeconds)
     lastTickArrivalMs = validTicks[lastTickIndex];
     msSenseLastTick = nowMs - lastTickArrivalMs;
 
-#if WHEEL_MANAGER_DEBUG == 1
+    #if WHEEL_MANAGER_DEBUG == 1
     Serial.println("GS: lastTickIndex " + String(lastTickIndex) 
       + " arrivalMs: " + String(lastTickArrivalMs));
-#endif
+    #endif
 
     if(msSenseLastTick >= (durationSeconds * 1000))
     {
-#if WHEEL_MANAGER_DEBUG == 1
+      #if WHEEL_MANAGER_DEBUG == 1
       Serial.println("GS: found end duration: " + String(msSenseLastTick));
-#endif
+      #endif
       break;
       keepGoing = false;
     }
@@ -85,35 +85,29 @@ float WheelManager::GetSpeed(uint8_t durationSeconds)
     {
       // we have gone all the way around the array
       // get out of here
-      // knh todo - are we off by one here?
 
-#if WHEEL_MANAGER_DEBUG == 1
+        #if WHEEL_MANAGER_DEBUG == 1
         Serial.println("GS: checked whole array: " + String(numberOfTicksGoneBack));
-#endif
+        #endif
         keepGoing = false;
         break;
     }
 
     if(numberOfTicksGoneBack == validTickCount)
     {
-#if WHEEL_MANAGER_DEBUG == 1
+      #if WHEEL_MANAGER_DEBUG == 1
       Serial.println("GS: examiled all valid tickes");
-#endif
+      #endif
       break;
     }
   }  
-
-// knh todo - might want to use the time from the first to last tick instead of first to now
-// if there is more than one tick.
-
-  uint16_t msFromNowToFirstTickInSet = nowMs - lastTickArrivalMs;
   float inchesTravled = (float(numberOfTicksGoneBack) * wheelCircumfranceInches);
-#if WHEEL_MANAGER_DEBUG == 1
+  #if WHEEL_MANAGER_DEBUG == 1
   Serial.println("inchesTraveled: " + String(inchesTravled));
   Serial.println("msFromNowToFinish:" + String(msFromNowToFirstTickInSet));
   Serial.println("");
-#endif
-  return float(1000 * inchesTravled) / float(msFromNowToFirstTickInSet) / 17.6;
+  #endif
+  return inchesTravled / float(durationSeconds) / 17.6;
 }
 
 void WheelManager::AddTickRaw()
@@ -124,9 +118,9 @@ void WheelManager::AddTickRaw()
    // A tick is valid if it arrived 50ms after the last tick
    // at 6ft cirmfurance @ 15hz => 68 mph => 0.066 seconds between ticks.
 
-#if WHEEL_MANAGER_DEBUG == 1
+  #if WHEEL_MANAGER_DEBUG == 1
   Serial.begin(9600);
-#endif
+  #endif
 
   uint32_t nowMs = millis();
   uint32_t lastArrivalTimeMs = 0;
@@ -161,30 +155,13 @@ void WheelManager::AddTickRaw()
   }
 }
 
-String uint64ToString(uint64_t input) {
-  String result = "";
-  uint8_t base = 10;
-
-  do {
-    char c = input % base;
-    input /= base;
-
-    if (c < 10)
-      c +='0';
-    else
-      c += 'A' - 10;
-    result = c + result;
-  } while (input);
-  return result;
-}
-
 float WheelManager::GetTotalDistance()
 {
   // 63,360 inches per mile: 100 mi 6,336,000
   double totalInches = double(validTickCount) * double(wheelCircumfranceInches); 
-#if WHEEL_MANAGER_DEBUG == 1
+  #if WHEEL_MANAGER_DEBUG == 1
   Serial.println("tdi " + uint64ToString(totalInches));
-#endif
+  #endif
   return float(totalInches / 63360) + miliageAdjustment;
 }
 

@@ -28,7 +28,7 @@ class EnduroManager
         static uint8_t nextRouteEntryIndex;
         static RouteEntry nextRouteEntry;
 
-        static uint8_t getNextRouteEntry();
+        static int8_t getNextRouteEntry(uint8_t &freeMinutes);
 
         static int8_t getRaceData(
             uint16_t &tenthMilesToPossiable,

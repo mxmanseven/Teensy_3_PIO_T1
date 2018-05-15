@@ -8,7 +8,7 @@
 enum class RouteType : uint8_t 
 {
   SpeedChange,
-  MiliageRest,
+  MiliageRest, // knh todo - Mileage
   KnownControl,
   EndBy,
   FreeTime
