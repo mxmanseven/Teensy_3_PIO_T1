@@ -106,7 +106,7 @@ int8_t Route::addEntry(
   }
 
   // write this route to the next spot in eeprom
-  int addrToWrite = STARTTING_ADDRESS + (routeCount * BYTES_PER_ROUTE);
+  int addrToWrite = ROUTE_FIRST_ADDRESS + (routeCount * BYTES_PER_ROUTE);
 
    #if ROUTE_DEBUG == 1
   Serial.println("Route::addEntry() addrToWrite: " + String(addrToWrite));
@@ -145,7 +145,7 @@ int8_t Route::getEntry(
 
   if (entryIndex >= routeCount) return -1;
 
-  int addrToRead = STARTTING_ADDRESS + ((entryIndex) * BYTES_PER_ROUTE);
+  int addrToRead = ROUTE_FIRST_ADDRESS + ((entryIndex) * BYTES_PER_ROUTE);
 
   #if ROUTE_DEBUG == 1
   Serial.println("Route::getEntry() addrToRead: " + addrToRead);

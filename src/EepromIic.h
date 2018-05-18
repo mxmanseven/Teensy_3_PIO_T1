@@ -14,4 +14,11 @@ class EepromIic
             unsigned int eeaddress);
 };
 
+    // store wheel size at address 26 and use 4 bytes (32bits)
+    const int WHEEL_SIZE_FIRST_ADDRESS = 26;
+
+    // Start storing rout data at address 30
+    const int ROUTE_FIRST_ADDRESS = 30;
+    const int ROUTE_COUNT_ADDRESS = 29;
+
 #endif

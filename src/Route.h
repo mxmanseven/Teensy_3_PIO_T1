@@ -8,7 +8,7 @@
 // set ROUTE_DEBUG to 1 to enable debug mode
 // set to anything else to dissable it.
 #ifndef ROUTE_DEBUG
-#define ROUTE_DEBUG 0
+#define ROUTE_DEBUG 1
 #endif
 
 #if ROUTE_DEBUG == 1
@@ -70,9 +70,6 @@ class Route
 
     static const int TOTAL_BYTES_TO_STORE = MAX_ROUTES * BYTES_PER_ROUTE;
 
-    // Start storing rout data at address 30
-    static const int STARTTING_ADDRESS = 30;
-    static const int ROUTE_COUNT_ADDRESS = 29;
 
 };
 
