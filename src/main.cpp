@@ -42,8 +42,10 @@ void setup()
     #if ROUTE_DEBUG == 1
     RouteTest();
     #endif
-
-    //EnduroManagerTest();
+    
+    #if ENDURO_MANAGER_DEBUG == 1
+    EnduroManagerTest();
+    #endif
 }
 
 void loop() {

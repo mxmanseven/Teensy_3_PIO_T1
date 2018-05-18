@@ -5,11 +5,6 @@
 #if ROUTE_DEBUG == 1
 void RouteTest()
 {
-  // for (int j = 0; j < 512; j++)
-  // {
-  //   EepromIic::write_byte(j, 0);
-  // }
-
   Route::setRouteCount(0);
   int index = 0;
   for (int i = 0; i < 50; i +=5)
@@ -226,3 +221,18 @@ String Route::ToStringConsole(
     + " freeMinutes: " + String(freeMinutes);
 }
 
+int8_t Route::ClearAllRoutes()
+{
+  uint16_t startAddress = ROUTE_FIRST_ADDRESS;
+  uint16_t endAddress = startAddress + TOTAL_BYTES_TO_STORE;
+
+  int nResult = 0;
+
+  for (int j = startAddress; j < endAddress; j++)
+  {
+    EepromIic::write_byte(j, 0);
+  }
+
+  EepromIic::write_byte(ROUTE_COUNT_ADDRESS, 0);
+  return nResult;
+} 

@@ -4,16 +4,71 @@
 #include "WheelManager.h"
 #include "SpeedInterval.h"
 
+
+#if ENDURO_MANAGER_DEBUG == 1
 int EnduroManagerTest()
 {
     int nResult = 0;
 
+    Route route;
+
     EnduroManager em;
 
+    route.ClearAllRoutes();
+    // 1
+    route.addEntry(
+        0, // start tenthmile
+        40, // end tenth mile
+        15, // speed mph
+        0,  // free minutes
+        RouteType::SpeedChange);
+    // 2
+    route.addEntry(
+        40, // start tenthmile
+        45, // end tenth mile
+        10, // speed mph
+        0,  // free minutes
+        RouteType::SpeedChange);
+    // 3
+    route.addEntry(
+        45, // start tenthmile
+        46, // end tenth mile
+        6, // speed mph
+        0,  // free minutes
+        RouteType::SpeedChange);
+    // 4
+    route.addEntry(
+        46, // start tenthmile
+        60, // end tenth mile
+        7, // speed mph
+        0,  // free minutes
+        RouteType::SpeedChange);
+
+    uint8_t freeMinutes = 0;
+    RouteEntry r(0, 0, 0, RouteType::SpeedChange);
+    for (int i = 0; i < 4; i++)
+    {
+        int nResult = Route::getEntry(
+        i++,
+        r.startTenthMile,
+        r.endTenthMile,
+        r.speed,
+        freeMinutes,
+        r.routeType);
+
+        String routeString =Route::ToStringConsole(
+            r.startTenthMile,
+            r.endTenthMile,
+            r.speed,
+        freeMinutes,
+        r.routeType);
+        Serial.println("RouteTest obj: " + routeString);
+    }
     nResult = em.startEnduro();
     
     return nResult;
 }
+#endif
 
 EnduroManager::EnduroManager()
 {

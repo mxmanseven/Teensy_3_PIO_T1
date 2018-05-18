@@ -8,7 +8,7 @@
 // set ROUTE_DEBUG to 1 to enable debug mode
 // set to anything else to dissable it.
 #ifndef ROUTE_DEBUG
-#define ROUTE_DEBUG 1
+#define ROUTE_DEBUG 0
 #endif
 
 #if ROUTE_DEBUG == 1
@@ -18,6 +18,8 @@ void RouteTest();
 class Route
 {
   public:
+    Route();
+
     static uint8_t getRouteCount();
 
     static void setRouteCount(uint8_t count);
@@ -45,9 +47,10 @@ class Route
       uint8_t freeMinutes,
       RouteType routeType);
 
+    static int8_t ClearAllRoutes();
+
   private:
 
-    Route();
 
     static uint8_t validateNewRoute(
       uint16_t startTenthMile,

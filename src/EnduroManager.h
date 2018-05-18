@@ -8,7 +8,9 @@
 #define ENDURO_MANAGER_DEBUG 1
 #endif
 
+#if ENDURO_MANAGER_DEBUG == 1
 int EnduroManagerTest();
+#endif
 
 class EnduroManager
 {
