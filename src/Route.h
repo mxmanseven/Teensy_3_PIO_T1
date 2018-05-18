@@ -8,7 +8,7 @@
 // set ROUTE_DEBUG to 1 to enable debug mode
 // set to anything else to dissable it.
 #ifndef ROUTE_DEBUG
-#define ROUTE_DEBUG 1
+#define ROUTE_DEBUG 0
 #endif
 
 #if ROUTE_DEBUG == 1

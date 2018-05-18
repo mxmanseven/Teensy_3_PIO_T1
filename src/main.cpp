@@ -12,6 +12,7 @@
 #include "TimeService.h"
 #include "EepromIic.h"
 #include "Route.h"
+#include "EnduroManager.h"
 
 hd44780_I2Cexp lcd; // declare lcd object: auto locate & config exapander chip
 
@@ -21,10 +22,6 @@ EepromIic eepromIic;
 
 void setup() 
 {
-    #if WHEEL_MANAGER_DEBUG == 1
-    wmTest();
-    #endif
-
     Serial.begin(57600);
 
     while(!Serial) {}
@@ -38,10 +35,15 @@ void setup()
 
     delay(100);
 
+    #if WHEEL_MANAGER_DEBUG == 1
+    wmTest();
+    #endif
+
     #if ROUTE_DEBUG == 1
     RouteTest();
     #endif
 
+    //EnduroManagerTest();
 }
 
 void loop() {

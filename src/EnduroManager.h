@@ -8,9 +8,13 @@
 #define ENDURO_MANAGER_DEBUG 1
 #endif
 
+int EnduroManagerTest();
+
 class EnduroManager
 {
     public:
+        EnduroManager();
+
         // how do we get possiables form routes?
         // we only care about the next one possiable.
 
@@ -19,38 +23,36 @@ class EnduroManager
         // This gives us a know point of time and distance.
         // fromm this and currentRouteSpeed we can calculate
         // where the next possiable is and what time we should be there
-        static uint8_t lastRouteEntryIndex;
+        uint8_t lastRouteEntryIndex;
 
         // store off the last one so we don't have 
         // to look it up all the time
-        static RouteEntry lastRouteEntry;
+        RouteEntry lastRouteEntry;
 
-        static uint8_t nextRouteEntryIndex;
-        static RouteEntry nextRouteEntry;
+        uint8_t nextRouteEntryIndex;
+        RouteEntry nextRouteEntry;
 
-        static int8_t getNextRouteEntry(uint8_t &freeMinutes);
+        int8_t getNextRouteEntry(
+            uint8_t &freeMinutes);
 
-        static int8_t getRaceData(
+        int8_t getRaceData(
             uint16_t &tenthMilesToPossiable,
             int16_t &secondsOffPace
         );
 
         // the last route may not be a speed,
         // keep current route speed here
-        static uint8_t currentRouteSpeed;
+        uint8_t currentRouteSpeed;
 
-        static uint16_t currentSpeedStartTenthMile;
+        uint16_t currentSpeedStartTenthMile;
 
         // need to know if when we get to the next route entry
         // all route entries are distance based
         // if current distance >= distance of next
 
-        static int8_t startEnduro();
+        int8_t startEnduro();
 
-        static bool canStartEnduro();
+        bool canStartEnduro();
 
-    private:
-        // Default constructor
-        EnduroManager();
 };
 #endif

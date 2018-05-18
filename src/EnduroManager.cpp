@@ -4,11 +4,29 @@
 #include "WheelManager.h"
 #include "SpeedInterval.h"
 
+int EnduroManagerTest()
+{
+    int nResult = 0;
+
+    EnduroManager em;
+
+    nResult = em.startEnduro();
+    
+    return nResult;
+}
+
+EnduroManager::EnduroManager()
+{
+
+}
+
 int8_t EnduroManager::startEnduro()
 {
-    // knh todo - zero distance
     // knh todo - zero clock
-    
+
+    WheelManager wm;
+
+    wm.SetDistanceToZero();    
     lastRouteEntryIndex = 0;
     nextRouteEntryIndex = 0;
     currentRouteSpeed = 0;
@@ -53,6 +71,8 @@ int8_t EnduroManager::startEnduro()
         Serial.printf("EnduroManager::StartEnduro ERROR, first route is not a speed");
         return -3;
     }
+
+    return 0;
 }
 
 int8_t EnduroManager::getRaceData(
@@ -60,7 +80,10 @@ int8_t EnduroManager::getRaceData(
             int16_t &secondsOffPace)
 {
     int nResult = 0;
-    float totalDistanceTenthMile = WheelManager::GetTotalDistance() * 10;
+    
+    WheelManager wm;
+
+    float totalDistanceTenthMile = wm.GetTotalDistance() * 10;
     uint8_t freeMinutes = 0;
     float milesChange = 0.0;
     // knh todo - factor out getting next route  and handling the type into a seperate function.
@@ -93,7 +116,7 @@ int8_t EnduroManager::getRaceData(
             case RouteType::MiliageRest:
             { 
                 milesChange = (lastRouteEntry.endTenthMile - lastRouteEntry.startTenthMile) / 10.0;
-                WheelManager::AddDistance(milesChange);
+                wm.AddDistance(milesChange);
                 // call self to start process from top
                 goto Top;
             }
@@ -137,9 +160,9 @@ int8_t EnduroManager::getRaceData(
 //  pace = secondsIntoRace - expectedSecondsHere 
 
 
-    float milesToPossiable = tenthMilesToPossiable / 10.0;
-    int expectedSecondsAtPossiable = nextPossiablCount * minutesPerPossiable; // knh todo add expected minutes at last speed
-    int expectedSecondsHere = expectedSecondsAtPossiable; // expectedSecondsToNextPossiable
+    // float milesToPossiable = tenthMilesToPossiable / 10.0;
+    // int expectedSecondsAtPossiable = nextPossiablCount * minutesPerPossiable; // knh todo add expected minutes at last speed
+    // int expectedSecondsHere = expectedSecondsAtPossiable; // expectedSecondsToNextPossiable
     
 
 
@@ -197,39 +220,41 @@ int8_t EnduroManager::getNextRouteEntry(uint8_t &freeMinutes)
     lastRouteEntryIndex++;
     int nResult = 0;
 
-    nResult = Route::getEntry(
-        lastRouteEntryIndex, 
-        lastRouteEntry.startTenthMile,
-        lastRouteEntry.endTenthMile,
-        lastRouteEntry.speed,
-        freeMinutes,
-        lastRouteEntry.routeType);
+    // nResult = Route::getEntry(
+    //     lastRouteEntryIndex,
+    //     lastRouteEntry.startTenthMile,
+    //     lastRouteEntry.endTenthMile,
+    //     lastRouteEntry.speed,
+    //     freeMinutes,
+    //     lastRouteEntry.routeType);
 
-    Serial.printf("EnduroManager::getNextRouteEntry getentry failed: %d", 
-        nResult);
+    // Serial.printf("EnduroManager::getNextRouteEntry getentry failed: %d", 
+    //     nResult);
 
-    return -1;
+    // return -1;
 
-    uint8_t routeCount = Route::getRouteCount();
+    // uint8_t routeCount = Route::getRouteCount();
 
-    if(routeCount > lastRouteEntryIndex)
-    {
-        // get next route
-        nextRouteEntryIndex = lastRouteEntryIndex + 1;
-        uint8_t freeMinutesTemp = 0;
-        nResult = Route::getEntry(
-            nextRouteEntryIndex, 
-            nextRouteEntry.startTenthMile,
-            nextRouteEntry.endTenthMile,
-            nextRouteEntry.speed,
-            freeMinutesTemp,
-            nextRouteEntry.routeType);
+    // if(routeCount > lastRouteEntryIndex)
+    // {
+    //     // get next route
+    //     nextRouteEntryIndex = lastRouteEntryIndex + 1;
+    //     uint8_t freeMinutesTemp = 0;
+    //     nResult = Route::getEntry(
+    //         nextRouteEntryIndex, 
+    //         nextRouteEntry.startTenthMile,
+    //         nextRouteEntry.endTenthMile,
+    //         nextRouteEntry.speed,
+    //         freeMinutesTemp,
+    //         nextRouteEntry.routeType);
             
-        Serial.printf("EnduroManager::getNextRouteEntry getentry failed: %d", 
-            nResult);
+    //     Serial.printf("EnduroManager::getNextRouteEntry getentry failed: %d", 
+    //         nResult);
 
-        return -2;
-    }
+    //     return -2;
+    // }
+
+    return nResult;
 }
 
 bool EnduroManager::canStartEnduro()

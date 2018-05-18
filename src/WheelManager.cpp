@@ -1,13 +1,16 @@
 #include "WheelManager.h"
 #include <Arduino.h>
 
+float WheelManager::wheelCircumfranceInches = 84.5;
+float WheelManager::miliageAdjustment = 0;
+uint32_t WheelManager::validTickCount = 0;
+uint32_t WheelManager::validTicks[MAX_TICK_COUNT];
+
 #if WHEEL_MANAGER_DEBUG == 1
 void wmTest()
 {
-  // knh todo - remove Serial.begin()
-  Serial.begin(9600);
-  
   WheelManager wm;
+
   wm.wheelCircumfranceInches = 84.5;
 
   while(true)
@@ -34,11 +37,16 @@ void wmTest()
 
 WheelManager::WheelManager()
 {
+
+}
+
+int8_t WheelManager::beging()
+{
   // knh todo - get wheelCircumfranceInches from eeprom.
-  wheelCircumfranceInches = 0.0;
-  validTickCount = 0;
-  MIN_MS_BETWEEN_TICKS = 50;
+  WheelManager::wheelCircumfranceInches = 84.5;
+  WheelManager::validTickCount = 0;
   miliageAdjustment = 0;
+  return 0;
 }
 
 float WheelManager::GetSpeed(uint8_t durationSeconds)
@@ -51,10 +59,10 @@ float WheelManager::GetSpeed(uint8_t durationSeconds)
 
   uint32_t nowMs = millis();
 
-#if WHEEL_MANAGER_DEBUG == 1
+  #if WHEEL_MANAGER_DEBUG == 1
   Serial.println("GS: durationSeconds: " + String(durationSeconds));
   Serial.println("GS: nowMs: " + String(nowMs));
-#endif
+  #endif
 
   uint16_t numberOfTicksGoneBack = 0;
   uint16_t lastTickIndex = 0; 
@@ -107,7 +115,6 @@ float WheelManager::GetSpeed(uint8_t durationSeconds)
   float inchesTravled = (float(numberOfTicksGoneBack) * wheelCircumfranceInches);
   #if WHEEL_MANAGER_DEBUG == 1
   Serial.println("inchesTraveled: " + String(inchesTravled));
-  Serial.println("msFromNowToFinish:" + String(msFromNowToFirstTickInSet));
   Serial.println("");
   #endif
   return inchesTravled / float(durationSeconds) / 17.6;
@@ -120,11 +127,6 @@ void WheelManager::AddTickRaw()
    // and vlaidTickCount++;
    // A tick is valid if it arrived 50ms after the last tick
    // at 6ft cirmfurance @ 15hz => 68 mph => 0.066 seconds between ticks.
-
-  #if WHEEL_MANAGER_DEBUG == 1
-  // knh todo - remove Serial.begin()
-  Serial.begin(9600);
-  #endif
 
   uint32_t nowMs = millis();
   uint32_t lastArrivalTimeMs = 0;
@@ -163,9 +165,6 @@ float WheelManager::GetTotalDistance()
 {
   // 63,360 inches per mile: 100 mi 6,336,000
   double totalInches = double(validTickCount) * double(wheelCircumfranceInches); 
-  #if WHEEL_MANAGER_DEBUG == 1
-  Serial.println("tdi " + uint64ToString(totalInches));
-  #endif
   return float(totalInches / 63360) + miliageAdjustment;
 }
 
@@ -180,4 +179,9 @@ void WheelManager::ChangeDistanceAndCalibrate(float milesAdjustment)
 {
   miliageAdjustment += milesAdjustment;
   // knh todo - calibrate wheel size for new distance
+}
+
+void WheelManager::SetDistanceToZero()
+{
+  validTickCount = 0;
 }
