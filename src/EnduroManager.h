@@ -44,8 +44,7 @@ class EnduroManager
 
         int8_t getRaceData(
             float &tenthMilesToPossiable,
-            int16_t &secondsOffPace
-        );
+            int16_t &secondsOffPace);
 
         // gets new route entries 
         // if we have gone through the last route

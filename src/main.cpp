@@ -17,8 +17,9 @@
 hd44780_I2Cexp lcd; // declare lcd object: auto locate & config exapander chip
 
 TimeServicKnh timeKnh;
-
+WheelManager wm;
 EepromIic eepromIic;
+EnduroManager em;
 
 void setup() 
 {
@@ -36,7 +37,7 @@ void setup()
     delay(100);
 
     #if WHEEL_MANAGER_DEBUG == 1
-    wmTest();
+    //wmTest();
     #endif
 
     #if ROUTE_DEBUG == 1
@@ -46,10 +47,29 @@ void setup()
     #if ENDURO_MANAGER_DEBUG == 1
     EnduroManagerTest();
     #endif
+    
+    em.startEnduro();
 }
+
+float tenthMilesToPossiable = 0;
+int16_t secondsOffPace = 0;
 
 void loop() {
      delay(1000);
+
+    wm.AddTickRaw();
+
+    em.getRaceData( 
+        tenthMilesToPossiable,
+        secondsOffPace);
+
+    float distance = wm.GetTotalDistance();
+
+    Serial.printf("distance: %f\n", distance);
+    Serial.printf("speed: %f\n", wm.GetSpeed(2));
+    Serial.printf("tenthMilesToPossiable: %f\n", tenthMilesToPossiable);
+    Serial.printf("secondsOffPace: %f\n\n", secondsOffPace);
+
 
     // eepromIic.write_byte(0, 27);
     // delay(100);
