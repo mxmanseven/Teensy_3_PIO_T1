@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "RouteEntry.h"
+#include "WheelManager.h"
 
 #ifndef ENDURO_MANAGER_DEBUG
 #define ENDURO_MANAGER_DEBUG 1
@@ -16,6 +17,8 @@ class EnduroManager
 {
     public:
         EnduroManager();
+        
+        WheelManager wm;
 
         // how do we get possiables form routes?
         // we only care about the next one possiable.
@@ -34,19 +37,35 @@ class EnduroManager
         uint8_t nextRouteEntryIndex;
         RouteEntry nextRouteEntry;
 
+        // getNextRouteEntry updates lastRouteEntry 
+        // and NextRouteEntry
         int8_t getNextRouteEntry(
             uint8_t &freeMinutes);
 
         int8_t getRaceData(
-            uint16_t &tenthMilesToPossiable,
+            float &tenthMilesToPossiable,
             int16_t &secondsOffPace
         );
+
+        // gets new route entries 
+        // if we have gone through the last route
+        int updateRoutes(
+            float totalDistanceTenthMile);
+
+        int getTenthMilesToNextPossiable(
+            float totalDistanceTenthMile,
+            float &tenthMilesToPossiable,
+            uint8_t &nextPossiableCountAtSpeed,
+            int &minutesPerPossiable);
 
         // the last route may not be a speed,
         // keep current route speed here
         uint8_t currentRouteSpeed;
 
         uint16_t currentSpeedStartTenthMile;
+
+        // for the last speed, the expected time to be there.
+        int currentSpeedStartOnTimeSeconds;
 
         // need to know if when we get to the next route entry
         // all route entries are distance based
@@ -55,6 +74,15 @@ class EnduroManager
         int8_t startEnduro();
 
         bool canStartEnduro();
+
+        int secondsFromTenthMilesAndMph(
+            uint16_t tenthMiles,
+            uint8_t speedMph);
+
+            
+        int secondsFromTenthMilesAndMph(
+            float tenthMiles,
+            uint8_t speedMph);
 
 };
 #endif
