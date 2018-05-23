@@ -355,10 +355,6 @@ int8_t EnduroManager::getRaceData(
 
 int8_t EnduroManager::getNextRouteEntry(uint8_t &freeMinutes)
 {
-    if(lastRouteEntryIndex != 0)
-    {
-        lastRouteEntryIndex++;
-    }
     int nResult = 0;
 
     nResult = Route::getEntry(
@@ -413,10 +409,7 @@ int8_t EnduroManager::getNextRouteEntry(uint8_t &freeMinutes)
         lastRouteEntry.endTenthMile = nextRouteEntry.startTenthMile;
     }
     
-    if(lastRouteEntryIndex == 0)
-    {
-        lastRouteEntryIndex++;
-    }
+    lastRouteEntryIndex++;
 
     return nResult;
 }
