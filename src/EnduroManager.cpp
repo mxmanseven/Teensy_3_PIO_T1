@@ -18,14 +18,14 @@ int EnduroManagerTest()
     route.addEntry(
         0, // start tenthmile
         40, // end tenth mile
-        15, // speed mph
+        6, // speed mph
         0,  // free minutes
         RouteType::SpeedChange);
     // 2
     route.addEntry(
         40, // start tenthmile
         45, // end tenth mile
-        10, // speed mph
+        12, // speed mph
         0,  // free minutes
         RouteType::SpeedChange);
     // 3
@@ -230,15 +230,22 @@ int EnduroManager::getTenthMilesToNextPossiable(
         milesPerPossiable,
         minutesPerPossiable);
 
+    // Serial.printf("EM::getTenthMilesToNextPossiable, minutesPerPossiable: %d\n",
+    //     minutesPerPossiable);
     Serial.printf("EM::getTenthMilesToNextPossiable, currentSpeedStartTenthMile: %d\n",
         currentSpeedStartTenthMile);
-    Serial.printf("EM::getTenthMilesToNextPossiable, totalDistanceTenthMile: %f\n",
-        totalDistanceTenthMile);
+    // Serial.printf("EM::getTenthMilesToNextPossiable, totalDistanceTenthMile knh: %f\n",
+    //     totalDistanceTenthMile);    
+
+    float tenthMilesIntoSpeed = totalDistanceTenthMile - (float)currentSpeedStartTenthMile;
+    
+    // Serial.printf("EM::getTenthMilesToNextPossiable, tenthMilesIntoSpeed: %f\n",
+    //     tenthMilesIntoSpeed);
     
     float milesIntoSpeedRoute = 
-        (totalDistanceTenthMile - currentSpeedStartTenthMile) / 10;
+        tenthMilesIntoSpeed / 10.0;
 
-    Serial.printf("EM::getTenthMilesToNextPossiable, milesIntoSpeedRoute: %d\n",
+    Serial.printf("EM::getTenthMilesToNextPossiable, milesIntoSpeedRoute: %f\n",
         milesIntoSpeedRoute);
 
     nextPossiableCountAtSpeed = ceil(milesIntoSpeedRoute / milesPerPossiable);
@@ -295,9 +302,22 @@ int8_t EnduroManager::getRaceData(
     
     int expectedSecondsAtNextPossiable =
         nextPossiableCountAtSpeed * minutesPerPossiable * 60 + currentSpeedStartOnTimeSeconds;
+
+    
+    Serial.printf("EM::getRaceData expectedSecondsAtNextPossiable: %d\n",
+        expectedSecondsAtNextPossiable);    
+    
+    Serial.printf("EM::getRaceData tenthMilesToPossiable: %f\n",
+        tenthMilesToPossiable);    
+    
+    Serial.printf("EM::getRaceData currentRouteSpeed: %d\n",
+        currentRouteSpeed);    
     
     int secondsToTravelRemainingDistanceInPossiableAtRouteSpeed = 
         secondsFromTenthMilesAndMph(tenthMilesToPossiable, currentRouteSpeed);
+        
+    Serial.printf("EM::getRaceData secondsToTravelRemainingDistanceInPossiableAtRouteSpeed: %d\n",
+        secondsToTravelRemainingDistanceInPossiableAtRouteSpeed);
     
     secondsOffPace = 
         expectedSecondsAtNextPossiable - secondsToTravelRemainingDistanceInPossiableAtRouteSpeed;
@@ -424,5 +444,5 @@ int EnduroManager::secondsFromTenthMilesAndMph(
     float tenthMiles,
     uint8_t speedMph)
 {
-    return ((tenthMiles * 10.0) / (float)speedMph) * 60;
+    return ((tenthMiles / 10.0) / (float)speedMph) * 60 * 60;
 }
