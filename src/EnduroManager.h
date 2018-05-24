@@ -3,7 +3,9 @@
 
 #include "Arduino.h"
 #include "RouteEntry.h"
-#include "WheelManager.h"
+#include "WheelManager.h" 
+#include "TimeService.h"
+
 
 #ifndef ENDURO_MANAGER_DEBUG
 #define ENDURO_MANAGER_DEBUG 1
@@ -19,6 +21,11 @@ class EnduroManager
         EnduroManager();
         
         WheelManager wm;
+        TimeServicKnh timeService;
+
+        uint32_t enduroStartTimeSeconds;
+
+
 
         // how do we get possiables form routes?
         // we only care about the next one possiable.

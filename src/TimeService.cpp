@@ -13,7 +13,7 @@ int TimeServicKnh::setTime()
     return 0;
 }
 
-int TimeServicKnh::getUnitxTime()
+uint32_t TimeServicKnh::getUnitxTime()
 {
     DateTime now = RTC.now();
     return now.unixtime();

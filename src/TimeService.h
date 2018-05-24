@@ -25,7 +25,7 @@ class TimeServicKnh
 
         // on race start, get time to base offset
         // use internal mills() for speed calc.
-        int getUnitxTime();
+        uint32_t getUnitxTime();
 };
 
 #endif

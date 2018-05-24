@@ -48,13 +48,17 @@ void setup()
     EnduroManagerTest();
     #endif
     
-    em.startEnduro();
+    //em.startEnduro();
 }
 
 float tenthMilesToPossiable = 0;
 int16_t secondsOffPace = 0;
 
+uint32_t i = 0;
+
 void loop() {
+    if(i++ == 0) em.startEnduro();
+
      delay(1000);
 
     wm.AddTickRaw();
