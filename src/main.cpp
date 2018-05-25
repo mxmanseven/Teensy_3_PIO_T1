@@ -72,7 +72,7 @@ void loop() {
     Serial.printf("distance: %f\n", distance);
     Serial.printf("speed: %f\n", wm.GetSpeed(2));
     Serial.printf("tenthMilesToPossiable: %f\n", tenthMilesToPossiable);
-    Serial.printf("secondsOffPace: %f\n\n", secondsOffPace);
+    Serial.printf("secondsOffPace: %d\n\n", secondsOffPace);
 
 
     // eepromIic.write_byte(0, 27);

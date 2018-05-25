@@ -296,84 +296,23 @@ int8_t EnduroManager::getRaceData(
         return nResult;
     }
 
-//  expectedSecondstoNextPossiable = milesToPossiable / Speed * 60 * 60
-//  expectedSecondsHere = expectedSecondsAtNextPossiable - expectedSecondstoNextPossiable
-//  pace = secondsIntoRace - expectedSecondsHere 
+    float milesFromSpeedStart = (totalDistanceTenthMile - (float)currentSpeedStartTenthMile) / 10.0;
+    
+    Serial.printf("EM::getRaceData milesFromSpeedStart: %f\n",
+        milesFromSpeedStart);    
 
-    
-    int expectedSecondsAtNextPossiable =
-        nextPossiableCountAtSpeed * minutesPerPossiable * 60 + currentSpeedStartOnTimeSeconds;
+    int expectedSecondsHere = secondsFromTenthMilesAndMph(milesFromSpeedStart * 10, currentRouteSpeed);
 
-    
-    Serial.printf("EM::getRaceData expectedSecondsAtNextPossiable: %d\n",
-        expectedSecondsAtNextPossiable);    
-    
-    Serial.printf("EM::getRaceData tenthMilesToPossiable: %f\n",
-        tenthMilesToPossiable);    
-    
-    Serial.printf("EM::getRaceData currentRouteSpeed: %d\n",
-        currentRouteSpeed);    
-    
-    int secondsToTravelRemainingDistanceInPossiableAtRouteSpeed = 
-        secondsFromTenthMilesAndMph(tenthMilesToPossiable, currentRouteSpeed);
-        
-    Serial.printf("EM::getRaceData secondsToTravelRemainingDistanceInPossiableAtRouteSpeed: %d\n",
-        secondsToTravelRemainingDistanceInPossiableAtRouteSpeed);
+    Serial.printf("EM::getRaceData expectedSecondsHere: %d\n",
+        expectedSecondsHere);
 
     uint32_t secondsIntoEnduro = timeService.getUnitxTime() - enduroStartTimeSeconds;
     
+    Serial.printf("EM::getRaceData secondsIntoEnduro: %d\n",
+        secondsIntoEnduro);
+    
     secondsOffPace = 
-        secondsIntoEnduro
-        - expectedSecondsAtNextPossiable
-        - secondsToTravelRemainingDistanceInPossiableAtRouteSpeed;
-
-        
-    Serial.printf("EM::getRaceData secondsOffPace: %d\n",
-        secondsOffPace);
-    
-
-
-    // pace
-
-    // Given the current mile, get the next possable,
-    // for the speed find what the ontime minute is
-    // pace is the difference of teh ontime minute and teh actule minutes.
-// enduro pace calculation
-
-// get next or last known time and distance possiable and work back from there based on course speed
-
-// ex
-
-// 6 mph, 
-//     0.1mi between possiables
-//     1min between possiables
-//     10 min per mile
-    
-//     next possiable
-//         mile 1
-//         time 10min
-//         speed 6
-        
-//     current distance 0.95mi
-//     current time: 8min
-//     actual pace off by over a minute
-    
-//         distance to next possiable = 1 - 0.95 = 0.05
-        
-//         time to travel that distance = distance / rate 
-//            hr = 0.05mi / 6mph
-//             = 0.00833 hours
-//            min = 0.00833hr * 60 (min / hr)
-//            min = 0.5
-//            expectedSecondstoTravelThere = 0.5min * 60 = 30s
-//      expectedSecondstoNextPossiable = milesToPossiable / Speed * 60 * 60
-//
-//      expectedSecondsHere = expectedSecondsAtNextPossiable - expectedSecondstoNextPossiable
-//          = (10min * 60) - 30s
-//          = 600s - 30s
-//          = 570s 
-// pace = secondsIntoRace - expectedSecondsHere 
-           
+        secondsIntoEnduro - expectedSecondsHere;
         
 // distance = rate * time
 // rate = distance / time
