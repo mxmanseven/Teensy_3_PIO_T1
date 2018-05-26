@@ -1,7 +1,8 @@
 #include "WheelManager.h"
 #include <Arduino.h>
 
-float WheelManager::wheelCircumfranceInches = 84.5;
+//float WheelManager::wheelCircumfranceInches = 84.5;
+float WheelManager::wheelCircumfranceInches = 105.6;
 float WheelManager::miliageAdjustment = 0;
 uint32_t WheelManager::validTickCount = 0;
 uint32_t WheelManager::validTicks[MAX_TICK_COUNT];
@@ -43,7 +44,8 @@ WheelManager::WheelManager()
 int8_t WheelManager::beging()
 {
   // knh todo - get wheelCircumfranceInches from eeprom.
-  WheelManager::wheelCircumfranceInches = 84.5;
+  ///WheelManager::wheelCircumfranceInches = 84.5;
+  WheelManager::wheelCircumfranceInches = 105.6;
   WheelManager::validTickCount = 0;
   miliageAdjustment = 0;
   return 0;

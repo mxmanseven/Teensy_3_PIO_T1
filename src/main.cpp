@@ -69,6 +69,7 @@ void loop() {
 
     float distance = wm.GetTotalDistance();
 
+    Serial.printf("getRaceSeconds: %d\n", timeKnh.getRaceSeconds());
     Serial.printf("distance: %f\n", distance);
     Serial.printf("speed: %f\n", wm.GetSpeed(2));
     Serial.printf("tenthMilesToPossiable: %f\n", tenthMilesToPossiable);

@@ -23,10 +23,6 @@ class EnduroManager
         WheelManager wm;
         TimeServicKnh timeService;
 
-        uint32_t enduroStartTimeSeconds;
-
-
-
         // how do we get possiables form routes?
         // we only care about the next one possiable.
 

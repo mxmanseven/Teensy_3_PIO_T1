@@ -100,7 +100,7 @@ int8_t EnduroManager::startEnduro()
     nextRouteEntry.startTenthMile = 0;
     nextRouteEntry.endTenthMile = 0;
     nextRouteEntry.routeType = RouteType::SpeedChange;
-    enduroStartTimeSeconds =  timeService.getUnitxTime();
+    timeService.startRaceSeconds();
 
     uint8_t freeMinutes = 0;
     
@@ -306,7 +306,7 @@ int8_t EnduroManager::getRaceData(
     Serial.printf("EM::getRaceData expectedSecondsHere: %d\n",
         expectedSecondsHere);
 
-    uint32_t secondsIntoEnduro = timeService.getUnitxTime() - enduroStartTimeSeconds;
+    uint32_t secondsIntoEnduro = timeService.getRaceSeconds();
     
     Serial.printf("EM::getRaceData secondsIntoEnduro: %d\n",
         secondsIntoEnduro);

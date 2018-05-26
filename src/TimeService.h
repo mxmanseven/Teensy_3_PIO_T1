@@ -22,10 +22,16 @@ class TimeServicKnh
 
         int setTime();
 
+        static uint32_t raceStartSeconds;
+
 
         // on race start, get time to base offset
         // use internal mills() for speed calc.
-        uint32_t getUnitxTime();
+        uint32_t getUnixTime();
+
+        int32_t startRaceSeconds();
+
+        uint32_t getRaceSeconds();
 };
 
 #endif
