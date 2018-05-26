@@ -60,6 +60,11 @@ class EnduroManager
             uint8_t &nextPossiableCountAtSpeed,
             int &minutesPerPossiable);
 
+        int getPaceSeconds(
+            float totalDistanceTenthMile,
+            int16_t &secondsOffPace
+        );
+
         // the last route may not be a speed,
         // keep current route speed here
         uint8_t currentRouteSpeed;

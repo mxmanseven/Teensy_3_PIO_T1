@@ -265,13 +265,39 @@ int EnduroManager::getTenthMilesToNextPossiable(
     return nResult;
 }
 
+
+int EnduroManager::getPaceSeconds(
+    float totalDistanceTenthMile,
+    int16_t &secondsOffPace)
+{
+    float milesFromSpeedStart = (totalDistanceTenthMile - (float)currentSpeedStartTenthMile) / 10.0;
+    
+    Serial.printf("EM::getRaceData milesFromSpeedStart: %f\n",
+        milesFromSpeedStart);    
+
+    int expectedSecondsHere = secondsFromTenthMilesAndMph(milesFromSpeedStart * 10, currentRouteSpeed);
+
+    Serial.printf("EM::getRaceData expectedSecondsHere: %d\n",
+        expectedSecondsHere);
+
+    uint32_t secondsIntoEnduro = timeService.getRaceSeconds();
+    
+    Serial.printf("EM::getRaceData secondsIntoEnduro: %d\n",
+        secondsIntoEnduro);
+    
+    secondsOffPace = 
+        secondsIntoEnduro - expectedSecondsHere;
+
+    return 0;    
+}
+
 int8_t EnduroManager::getRaceData(
             float &tenthMilesToPossiable,
             int16_t &secondsOffPace)
 {
     int nResult = 0;
     
-    float totalDistanceTenthMile = wm.GetTotalDistance() * 10;
+    float totalDistanceTenthMile = wm.GetTotalDistance() * 10.0;
     
     nResult = updateRoutes(totalDistanceTenthMile);
 
@@ -296,23 +322,17 @@ int8_t EnduroManager::getRaceData(
         return nResult;
     }
 
-    float milesFromSpeedStart = (totalDistanceTenthMile - (float)currentSpeedStartTenthMile) / 10.0;
-    
-    Serial.printf("EM::getRaceData milesFromSpeedStart: %f\n",
-        milesFromSpeedStart);    
+    nResult = getPaceSeconds(
+        totalDistanceTenthMile,
+        secondsOffPace);
+        
+    if(nResult)
+    {
+        Serial.printf("EM::getRaceData getPaceSeconds FAILED: %d\n", 
+            nResult);
+        return nResult;
+    }
 
-    int expectedSecondsHere = secondsFromTenthMilesAndMph(milesFromSpeedStart * 10, currentRouteSpeed);
-
-    Serial.printf("EM::getRaceData expectedSecondsHere: %d\n",
-        expectedSecondsHere);
-
-    uint32_t secondsIntoEnduro = timeService.getRaceSeconds();
-    
-    Serial.printf("EM::getRaceData secondsIntoEnduro: %d\n",
-        secondsIntoEnduro);
-    
-    secondsOffPace = 
-        secondsIntoEnduro - expectedSecondsHere;
         
 // distance = rate * time
 // rate = distance / time
@@ -340,7 +360,7 @@ int8_t EnduroManager::getNextRouteEntry(uint8_t &freeMinutes)
         return -1;
     }
     
-    String routeString =Route::ToStringConsole(
+    String routeString = Route::ToStringConsole(
         lastRouteEntry.startTenthMile,
         lastRouteEntry.endTenthMile,
         lastRouteEntry.speed,
