@@ -1,3 +1,29 @@
+/*This is an American Motorcycle Association Enduro computer.
+Given a route of speed averages, resets, free time, and known controls
+this computer will give the user their pace, distance, and time,
+all the information needed to win!
+
+   Hardware setup:
+Microcontroller:
+   Teensy 3.0 with NXP MK20d
+RTC / EEPROM:
+   ZS-042 break out board
+   DS3231  RTC
+   AT24C32 32kbit eeprom
+
+Connections:
+   ZS-042 is connected to the teensy with i2c.
+   IIC sac and sad lines are on pins 16 and 17
+   it is powered with 3.3v from the teensy
+   External pull up resistors are used.
+   I think they are 5k.
+  
+*/
+
+
+
+
+
 #include <Arduino.h>
 #include "display.h"
 #include "WheelManager.h"

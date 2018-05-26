@@ -288,6 +288,10 @@ int EnduroManager::getPaceSeconds(
     secondsOffPace = 
         secondsIntoEnduro - expectedSecondsHere;
 
+    // consider 30 seconds into minute zero
+    // this was the computer will read zero when zerosing an emergency check.
+    secondsOffPace += 30;
+
     return 0;    
 }
 
