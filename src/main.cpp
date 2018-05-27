@@ -1,4 +1,5 @@
-/*This is an American Motorcycle Association Enduro computer.
+/*
+This is an American Motorcycle Association Enduro computer.
 Given a route of speed averages, resets, free time, and known controls
 this computer will give the user their pace, distance, and time,
 all the information needed to win!
@@ -74,6 +75,9 @@ void setup()
     EnduroManagerTest();
     #endif
     
+
+    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(PIN_A7, INPUT_PULLUP); // Pushbutton
     //em.startEnduro();
 }
 
@@ -82,24 +86,38 @@ int16_t secondsOffPace = 0;
 
 uint32_t i = 0;
 
+
+bool ledOn = false;
 void loop() {
-    if(i++ == 0) em.startEnduro();
+    //if(i++ == 0) em.startEnduro();
+
+
+
+    uint8_t read = digitalRead(PIN_A7);
+    Serial.printf("read %d\n", read);
+    
+    if(!read) ledOn = !ledOn;
+
+    if(ledOn)
+        digitalWrite(LED_BUILTIN, HIGH);
+    else
+        digitalWrite(LED_BUILTIN, LOW);
 
      delay(1000);
 
-    wm.AddTickRaw();
+    //wm.AddTickRaw();
 
-    em.getRaceData( 
-        tenthMilesToPossiable,
-        secondsOffPace);
+    // em.getRaceData( 
+    //     tenthMilesToPossiable,
+    //     secondsOffPace);
 
-    float distance = wm.GetTotalDistance();
+    // float distance = wm.GetTotalDistance();
 
-    Serial.printf("getRaceSeconds: %d\n", timeKnh.getRaceSeconds());
-    Serial.printf("distance: %f\n", distance);
-    Serial.printf("speed: %f\n", wm.GetSpeed(2));
-    Serial.printf("tenthMilesToPossiable: %f\n", tenthMilesToPossiable);
-    Serial.printf("secondsOffPace: %d\n\n", secondsOffPace);
+    // Serial.printf("getRaceSeconds: %d\n", timeKnh.getRaceSeconds());
+    // Serial.printf("distance: %f\n", distance);
+    // Serial.printf("speed: %f\n", wm.GetSpeed(2));
+    // Serial.printf("tenthMilesToPossiable: %f\n", tenthMilesToPossiable);
+    // Serial.printf("secondsOffPace: %d\n\n", secondsOffPace);
 
 
     // eepromIic.write_byte(0, 27);

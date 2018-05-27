@@ -270,12 +270,16 @@ int EnduroManager::getPaceSeconds(
     float totalDistanceTenthMile,
     int16_t &secondsOffPace)
 {
-    float milesFromSpeedStart = (totalDistanceTenthMile - (float)currentSpeedStartTenthMile) / 10.0;
+    float milesFromSpeedStart = 
+    (totalDistanceTenthMile - (float)currentSpeedStartTenthMile) / 10.0;
     
     Serial.printf("EM::getRaceData milesFromSpeedStart: %f\n",
         milesFromSpeedStart);    
 
-    int expectedSecondsHere = secondsFromTenthMilesAndMph(milesFromSpeedStart * 10, currentRouteSpeed);
+    int expectedSecondsHere = 
+        secondsFromTenthMilesAndMph(
+            milesFromSpeedStart * 10, 
+            currentRouteSpeed);
 
     Serial.printf("EM::getRaceData expectedSecondsHere: %d\n",
         expectedSecondsHere);
